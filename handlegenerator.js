@@ -1,6 +1,7 @@
 let jwt = require( 'jsonwebtoken' );
 let config = require( './config' );
 const bcrypt = require("bcrypt");
+const saltRounds = 10;
 var LocalStorage = require('node-localstorage').LocalStorage;
 localStorage = new LocalStorage('./scratch');
 
@@ -15,7 +16,7 @@ class HandlerGenerator {
         async function run() {
             await client.connect();
             const db = client.db("jwt");
-            const coll = db.collection("credenciales")
+            const coll = db.collection("credenciales");
             // Extrae el usuario y la contraseña especificados en el cuerpo de la solicitud
             let username = req.body.username;
             let password = req.body.password;
@@ -60,6 +61,32 @@ class HandlerGenerator {
                     message: 'Authentication failed! Please check the request'
                 } );
                 return
+            }
+        }
+        run().catch(console.dir);
+    }
+
+    register(req, res) {
+        async function run() {
+            await client.connect();
+            const db = client.db("jwt");
+            const coll = db.collection("credenciales");
+            
+            let rep = await coll.findOne({
+                user: req.body["username"]
+            });
+            if (rep == null) {
+                const hash = bcrypt.hashSync(req.body["password"], saltRounds);
+                let doc = {
+                    user: req.body["username"],
+                    pass: hash,
+                    role: "client"
+                }
+                coll.insertOne(doc);
+                res.send("Usuario registrado");
+            } else {
+                res.status(403);
+                res.send("Ya existe un usuario el username");
             }
         }
         run().catch(console.dir);

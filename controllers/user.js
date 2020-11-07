@@ -32,9 +32,9 @@ async function createUser(user) {
       .collection(COLLECTION_NAME)
       .insertOne(user)
       .finally(() => client.close());
-  // TODO Delete sensitive information
+    // TODO Delete sensitive information
     return newUser;
-});
+  });
 }
 
 module.exports = [createUser, login];

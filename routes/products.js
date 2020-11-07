@@ -20,6 +20,9 @@ router.post('/', async function (req, res, next) {
     const newProduct = await insertProduct(req.body);
     console.warn('insert products->', newProduct);
     res.send(newProduct);
+  } else {
+    res.status(403);
+    res.send("No está autorizado para realizar esta acción");
   }
 });
 
