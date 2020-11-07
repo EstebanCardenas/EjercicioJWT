@@ -1,6 +1,8 @@
 let jwt = require( 'jsonwebtoken' );
 let config = require( './config' );
 const bcrypt = require("bcrypt");
+var LocalStorage = require('node-localstorage').LocalStorage;
+localStorage = new LocalStorage('./scratch');
 
 //mongo
 const {MongoClient} = require("mongodb");
@@ -36,6 +38,7 @@ class HandlerGenerator {
                         let token = jwt.sign( { username: username },
                             config.secret, { expiresIn: '24h' } );
                         // Retorna el token el cuál debe ser usado durante las siguientes solicitudes
+                        localStorage.setItem("role", user[0]["role"])
                         res.json( {
                             success: true,
                             message: 'Authentication successful!',

@@ -17,19 +17,18 @@ let checkToken = ( req, res, next ) => {
         token = token.slice(7, token.length );
         // Llama la función verify del paquete jsonwebtoken que se encarga de realizar la validación del token con el secret proporcionado
         jwt.verify( token, config.secret, ( err, decoded ) => {
-      
-        // Si no pasa la validación, un mensaje de error es retornado
-        // de lo contrario, permite a la solicitud continuar
-        if( err ) {
-          return res.json( {
-            success: false,
-            message: 'Token is not valid'
-          } );
-        } else {
-          req.decoded = decoded;
-          next();
-        }
-      } );
+          // Si no pasa la validación, un mensaje de error es retornado
+          // de lo contrario, permite a la solicitud continuar
+          if( err ) {
+            return res.json( {
+              success: false,
+              message: 'Token is not valid'
+            } );
+          } else {
+            req.decoded = decoded;
+            next();
+          }
+        } );
     }
   } else {
     
